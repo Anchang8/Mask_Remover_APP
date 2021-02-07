@@ -13,7 +13,7 @@ import cv2;
 from google.colab.patches import cv2_imshow
 
 #load cascade 폴더에 다른 cascadefile도 많음
-face_cascade=cv2.CascadeClassifier('/content/opencv/data/haarcascades/haarcascade_frontalface_default.xml')
+face_cascade=cv2.CascadeClassifier('cascadePath/haarcascade_frontalface_default.xml')
 
 #load image
 img=cv2.imread(#filepath)#ex) c:/test.jpg
