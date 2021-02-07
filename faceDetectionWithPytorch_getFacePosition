@@ -1,4 +1,5 @@
-#PIL ref : https://pillow.readthedocs.io/en/stable/reference/ImageDraw.html
+#PIL ref   : https://pillow.readthedocs.io/en/stable/reference/ImageDraw.html
+#source ref: https://www.kaggle.com/timesler/guide-to-mtcnn-in-facenet-pytorch#Bounding-boxes-and-facial-landmarks
 #인식률 괜찮은 듯
 !pip install facenet-pytorch
 from facenet_pytorch import MTCNN,extract_face
