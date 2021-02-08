@@ -1,0 +1,34 @@
+#date :2021-02-07
+#environments : colab 
+#               OpenCV : 4.1.2
+#               Python : 3.6.9
+#detectMultiScale ref : https://thebook.io/006939/ch13/02-07/
+#OpenCv ref           : https://www.bogotobogo.com/python/OpenCV_Python/python_opencv3_Image_Object_Detection_Face_Detection_Haar_Cascade_Classifiers.php
+#prepare opencv and cascade xmlfile 
+!pip install opencv-python
+!git clone https://github.com/opencv/opencv.git
+
+import cv2;
+#colab에서는 cv2.imshow()가 동작안해서 임의로 대체함
+from google.colab.patches import cv2_imshow
+
+#load cascade 폴더에 다른 cascadefile도 많음
+face_cascade=cv2.CascadeClassifier('cascadePath/haarcascade_frontalface_default.xml')
+
+#load image
+img=cv2.imread(#filepath)#ex) c:/test.jpg
+
+#convert gray picture(detectMultiScale함수가 gray이미지에서 작동하도록 설계되었다 함.따로 변환안해도 자동으로 detectMultiScale에서 gray로변환하고 진행한다는데..혹시 몰라서 변환함
+gray=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+
+#argument : imagefile,검색윈도우 사이즈 1보다 커야함,검출영역으로 선택하기위한 최소 검출 횟수.'
+#detectMultiScale return value = (x,y,w,h)  (x,y)=left bottom
+faces=face_cascade.detectMultiScale(gray,1.1,4)
+for (x, y, w, h) in faces:
+    cv2.rectangle(img, (x, y), (x+w, y+h), (255, 0, 0), 2)#argument : image,startPoint(left bottom),endPoint(right up),RGB color,thickness
+#cv2.rectangle return value = image
+# Display the output
+cv2_imshow(img)
+cv2.waitKey()
+
+
