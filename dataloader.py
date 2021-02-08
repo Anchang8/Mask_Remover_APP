@@ -34,4 +34,3 @@ class FaceMask():
         sample = {'WO_mask' : WOmask_img, 'W_mask' : Wmask_img}
 
         return sample
->>>>>>> 488bf70dd6f0f394847c812dea5107b3405316f1
