@@ -11,6 +11,7 @@ class FaceMask():
         #Sorting by name
         self.Wmask_img = list(sorted(os.listdir(os.path.join(dataset_dir, 'train/with_mask/'))))
         self.WOmask_img = list(sorted(os.listdir(os.path.join(dataset_dir, 'train/without_mask/'))))
+        self.mask_img = list(sorted(os.listdir(os.path.join(dataset_dir, 'train/mask/'))))
     
     def __len__(self):
         dir_path = os.path.join(self.dataset_dir, 'train/with_mask')
@@ -23,14 +24,17 @@ class FaceMask():
         
         Wmask_img_path = os.path.join(self.dataset_dir, 'train/with_mask/', self.Wmask_img[idx])
         WOmask_img_path = os.path.join(self.dataset_dir, 'train/without_mask/', self.WOmask_img[idx])
+        mask_img_path = os.path.join(self.dataset_dir, 'train/mask/', self.mask_img[idx])
 
         Wmask_img = Image.open(Wmask_img_path)
         WOmask_img = Image.open(WOmask_img_path)
+        mask_img = Image.open(mask_img_path)
 
         if self.transform:
             Wmask_img = self.transform(Wmask_img)
             WOmask_img = self.transform(WOmask_img)
+            mask_img = self.transform(mask_img)
 
-        sample = {'WO_mask' : WOmask_img, 'W_mask' : Wmask_img}
+        sample = {'WO_mask' : WOmask_img, 'W_mask' : Wmask_img, 'mask' : mask_img}
 
         return sample
