@@ -6,17 +6,23 @@ def conv_block(inp, oup, kernel_size, stride, upsampling = False, Leaky = False,
                 conv_layer = nn.Conv2d, norm_layer = nn.BatchNorm2d, act_layer = nn.ReLU):
     if (upsampling):
         conv_layer = nn.ConvTranspose2d
-    if (Leaky):
-        act_layer = nn.LeakyReLU(0.2)
     if (InstanceNorm):
         norm_layer = nn.InstanceNorm2d
-    
-    return nn.Sequential(
-        #bias는 computational cost 줄이기위해 false
-        conv_layer(inp, oup, kernel_size, stride, 1, bias = False),
-        norm_layer(oup),
-        act_layer(inplace = True)       
-    )
+    if (Leaky):
+        act_layer = nn.LeakyReLU
+        return nn.Sequential(
+            #bias는 computational cost 줄이기위해 false
+            conv_layer(inp, oup, kernel_size, stride, 1, bias = False),
+            norm_layer(oup),
+            act_layer(0.2, inplace = True)       
+        )
+    else:
+        return nn.Sequential(
+            #bias는 computational cost 줄이기위해 false
+            conv_layer(inp, oup, kernel_size, stride, 1, bias = False),
+            norm_layer(oup),
+            act_layer(inplace = True)       
+        )
 
 def conv_3x3(inp, oup, stride = 1, conv_layer = nn.Conv2d):
     return nn.Sequential(
@@ -66,7 +72,6 @@ class SEBasicBlock(nn.Module):
         self.In = nn.InstanceNorm2d(oup)
         self.se = SELayer(oup, reduction)
         self.LReLU = nn.LeakyReLU(0.2)
-        self.downsample = downsample
 
     def forward(self, x):
         residual = x

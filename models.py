@@ -56,9 +56,9 @@ class Unet(nn.Module):
 class Generator(nn.Module):
     def __init__(self):
         super(Generator, self).__init__()
-        self.conv1 = SEBasicBlock_block(inp, channels, 4, 2)
-        self.conv2 = SEBasicBlock_block(channels, channels * 2, 4, 2)
-        self.conv3 = SEBasicBlock_block(channels * 2, channels * 4, 4, 2)
+        self.conv1 = SEBasicBlock(inp, channels, 4, 2)
+        self.conv2 = SEBasicBlock(channels, channels * 2, 4, 2)
+        self.conv3 = SEBasicBlock(channels * 2, channels * 4, 4, 2)
         self.conv4 = conv_block(channels * 4, channels * 6, 4, 2)
         self.conv5 = conv_block(channels * 6, channels * 8, 4, 2)
         
