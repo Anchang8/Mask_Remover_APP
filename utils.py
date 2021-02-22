@@ -1,5 +1,6 @@
 import numpy as np
 import random
+import os
 
 import torch
 import torch.nn as nn
@@ -29,23 +30,26 @@ def weights_init(m):
     if classname.find('BatchNorm') != -1:
         nn.init.normal_(m.weight.data, 1.0, 0.02)
         nn.init.constant_(m.bias.data, 0)
+        
 def trans(mode = 'normal'):
     if mode == 'normal':
         transform = transforms.Compose([
-            transforms.ColorJitter(brightness = 1),
+            #transforms.ColorJitter(brightness = (0.5,2)),
+            transforms.Resize((256,256)),
             transforms.ToTensor()
         ])
         return transform 
 
     if mode == 'mask':
         transform_mask = transforms.Compose([
+            transforms.Resize((256,256)),
             transforms.ToTensor()
         ])
         return transform_mask
     
     if mode == 'test':
         transform_test = transforms.Compose([
-            transforms.Resize((1024,1024)),
+            transforms.Resize((256,256)),
             transforms.ToTensor()
         ])
         return transform_test

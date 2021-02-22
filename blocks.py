@@ -68,15 +68,15 @@ class SEBasicBlock(nn.Module):
     def __init__(self, inp, oup, kernel_size, stride=1, reduction=16):
         super(SEBasicBlock, self).__init__()
         self.conv_block = conv_block(inp, oup, kernel_size, stride, Leaky = True, InstanceNorm = True)
-        self.conv = conv_3x3(inp, oup)
+        self.conv = conv_3x3(oup, oup)
         self.In = nn.InstanceNorm2d(oup)
         self.se = SELayer(oup, reduction)
-        self.LReLU = nn.LeakyReLU(0.2)
+        self.LReLU = nn.LeakyReLU(0.2, inplace = True)
 
     def forward(self, x):
         residual = x
+        
         out = self.conv_block(x)
-
         out = self.conv(out)
         out = self.In(out)
         out = self.se(out)
@@ -86,6 +86,6 @@ class SEBasicBlock(nn.Module):
 
         out += residual
         '''     
-        out = self.LRELU(out)
+        out = self.LReLU(out)
 
         return out

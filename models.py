@@ -73,30 +73,30 @@ class Generator(nn.Module):
         
     def forward(self, x):
         out = self.conv1(x)
-        out_512 = out
-        
-        out = self.conv2(out)
-        out_256 = out
-        
-        out = self.conv3(out)
         out_128 = out
         
-        out = self.conv4(out)
+        out = self.conv2(out)
         out_64 = out
+        
+        out = self.conv3(out)
+        out_32 = out
+        
+        out = self.conv4(out)
+        out_16 = out
         
         out = self.conv5(out)
         
         out = self.deconv1(out)
-        out = torch.cat([out, out_64], dim = 1)
+        out = torch.cat([out, out_16], dim = 1)
         
         out = self.deconv2(out)
-        out = torch.cat([out, out_128], dim = 1)
+        out = torch.cat([out, out_32], dim = 1)
         
         out = self.deconv3(out)
-        out = torch.cat([out, out_256], dim = 1)
+        out = torch.cat([out, out_64], dim = 1)
         
         out = self.deconv4(out)
-        out = torch.cat([out, out_512], dim = 1)
+        out = torch.cat([out, out_128], dim = 1)
         
         out = self.deconv5(out)
         return out
@@ -104,24 +104,24 @@ class Generator(nn.Module):
 class Discriminator(nn.Module):
     def __init__(self):
         super(Discriminator, self).__init__()
-        self.conv1 = self.deconv5 = nn.Sequential(
+        self.conv1 = nn.Sequential(
                 nn.Conv2d(inp, channels, 4, 2, 1, bias = False),
-                nn.LeakyReLU(0.2)
+                nn.LeakyReLU(0.2, inplace = True)
         )
         self.conv2 = conv_block(channels, channels * 2, 4, 2, Leaky = True, InstanceNorm = True)
-        self.conv3 = conv_block(channels * 2, channels * 4, 4, 2, Leaky = True, InstanceNorm = True)
-        self.conv4 = conv_block(channels * 4, channels * 8, 4, 2, Leaky = True, InstanceNorm = True)
+        self.conv3 = conv_block(channels * 2, channels * 4, 3, 1, Leaky = True, InstanceNorm = True)
+        self.conv4 = conv_block(channels * 4, channels * 8, 3, 1, Leaky = True, InstanceNorm = True)
         self.conv5 = nn.Sequential(
-            nn.Conv2d(channel * 8, 1, 3, 1, 1, bias = False),
+            nn.Conv2d(channels * 8, 1, 3, 1, 1, bias = False),
             nn.Sigmoid()
         )
     
     def forward(self, x):
         out = self.conv1(x)
-        out = self.conv2(x)
-        out = self.conv3(x)
-        out = self.conv4(x)
-        out = self.conv5(x)
+        out = self.conv2(out)
+        out = self.conv3(out)
+        out = self.conv4(out)
+        out = self.conv5(out)
         return out
         
         
