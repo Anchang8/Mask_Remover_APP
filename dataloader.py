@@ -8,7 +8,7 @@ from torchvision import transforms as trans
 class FaceMask():
     def __init__(self, dataset_dir, dataset_dir_made, transform = None, transform_mask = None, transform_test = None, test = False):
         self.test = test
-        self.transform_resize = trans.Resize((256, 256))
+        self.transform_resize = trans.Resize((512, 512))
         if self.test:
             self.dataset_dir = dataset_dir + 'test/'
             self.test_img = list(sorted(os.listdir(os.path.join(self.dataset_dir))))

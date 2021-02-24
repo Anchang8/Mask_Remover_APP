@@ -4,6 +4,7 @@ import os
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 from torchvision import transforms
 
@@ -32,24 +33,25 @@ def weights_init(m):
         nn.init.constant_(m.bias.data, 0)
         
 def trans(mode = 'normal'):
+    imsize = 512
     if mode == 'normal':
         transform = transforms.Compose([
             #transforms.ColorJitter(brightness = (0.5,2)),
-            transforms.Resize((256,256)),
+            transforms.Resize((imsize,imsize)),
             transforms.ToTensor()
         ])
         return transform 
 
     if mode == 'mask':
         transform_mask = transforms.Compose([
-            transforms.Resize((256,256)),
+            transforms.Resize((imsize,imsize)),
             transforms.ToTensor()
         ])
         return transform_mask
     
     if mode == 'test':
         transform_test = transforms.Compose([
-            transforms.Resize((256,256)),
+            transforms.Resize((imsize,imsize)),
             transforms.ToTensor()
         ])
         return transform_test
