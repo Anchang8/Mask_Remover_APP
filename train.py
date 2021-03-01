@@ -19,13 +19,13 @@ random_seed = 777
 
 rand_fix(random_seed)
 
-device = torch.device("cuda:4" if (torch.cuda.is_available()) else "cpu")
+device = torch.device("cuda:1" if (torch.cuda.is_available()) else "cpu")
 
 vgg = VGG19(requires_grad=False).to(device)
 
 dataset_dir = "./Datasets/"
-dataset_dir_made = './dataset'
-save_dir = "./CheckPoint5/"
+dataset_dir_made = './dataset/'
+save_dir = "./CheckPoint3/"
 num_workers = 0
 batch_size = 2
 num_epochs = 50
@@ -38,15 +38,14 @@ beta = 1
 gamma = 100
 
 transform = trans(mode = 'normal')
-transform_mask = trans(mode = 'mask')
-transform_test = trans(mode = 'test')
+#transform_mask = trans(mode = 'mask')
 
-train_dataset = FaceMask(dataset_dir, dataset_dir_made, transform, transform_mask)
+train_dataset = FaceMask(dataset_dir, dataset_dir_made, transform)
 train_dataloader = DataLoader(train_dataset, batch_size = batch_size,
                              shuffle = True, num_workers = num_workers)
 
-test_dataset = FaceMask(dataset_dir, dataset_dir_made, transform, transform_test = transform_test, test = True)
-test_dataloader = DataLoader(test_dataset, batch_size = 8,
+test_dataset = FaceMask(dataset_dir, dataset_dir_made, transform, test = True)
+test_dataloader = DataLoader(test_dataset, batch_size = len(test_dataset),
                             shuffle = False, num_workers = num_workers)
 
 sample = next(iter(test_dataloader))
@@ -158,10 +157,10 @@ for epoch in range(num_epochs):
         optim_D.step()
         optim_G.step()
         
-        if (i % 200 == 0):
+        if (i % 1000 == 0):
                 print("[{:d}/{:d}] D_ganL:{:.4f}     G_ganL:{:.4f}     Shape_L:{:.4f}    Perceptual_L:{:.4f}    SSIM_L:{:.4f}".
              format(i, len(dataloader), D_Loss.item(), G_Loss.item(), Shape_Loss.item(), perceptual_loss.item(), SSIM_loss.item()))
-        
+    
     save_checkpoint({
             'epoch' : epoch + 1,
             'netG_state_dict' : netG.state_dict(),
@@ -171,8 +170,8 @@ for epoch in range(num_epochs):
     }, save_dir, epoch + 1)
     
     print("="*100)
-    print('Time taken by epoch: {:.0f}h {:.0f}m {:.0f}s'.format((
-        (time.time() - start) // 60) // 60, (time.time() - start) // 60, (time.time() - start) % 60))
+    hour = ((time.time() - start) // 60) // 60
+    print('Time taken by epoch: {:.0f}h {:.0f}m {:.0f}s'.format(hour, ((time.time() - start) - hour * 60)//60, (time.time() - start) % 60))
     print()
     
     with torch.no_grad():
@@ -189,17 +188,17 @@ for epoch in range(num_epochs):
         test_sample = []
         
         for i in range(batch_size):
-            sample.extend([oup[i], result[i], result_s[i], result_c[i], oup2[i]])
-        for i in range(8):
+            sample.extend([inp[i], result[i], face_surgical[i].cpu(), result_s[i], face_cloth[i].cpu(), result_c[i]])
+        for i in range(test_img.size(0)):
             test_sample.extend([test_img[i].cpu(), test_result[i]])
         
         result_img = utils.make_grid(sample, padding = 2,
-                                        normalize = True, nrow = 5)
+                                        normalize = True, nrow = 2)
         test_result_img = utils.make_grid(test_sample, padding = 0,
                                         normalize = True, nrow = 2)
-        utils.save_image(result_img, "./result5/result-{}epoch.png".format(epoch + 1))
-        utils.save_image(test_result_img, "./result5/test_result-{}epoch.png".format(epoch + 1))
+        utils.save_image(result_img, "./result3/result-{}epoch.png".format(epoch + 1))
+        utils.save_image(test_result_img, "./result3/test_result-{}epoch.png".format(epoch + 1))
         
 print("Training is finished")
 hour = ((time.time() - Start) // 60) // 60
-print('Time taken by num_epochs: {:.0f}h {:.0f}m {:.0f}s'.format(hour, (time.time() - Start) - hour * 60, (time.time() - Start) % 60))
+print('Time taken by num_epochs: {:.0f}h {:.0f}m {:.0f}s'.format(hour, ((time.time() - Start) - hour * 60)//60, (time.time() - Start) % 60))

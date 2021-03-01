@@ -36,7 +36,6 @@ def trans(mode = 'normal'):
     imsize = 512
     if mode == 'normal':
         transform = transforms.Compose([
-            #transforms.ColorJitter(brightness = (0.5,2)),
             transforms.Resize((imsize,imsize)),
             transforms.ToTensor()
         ])
@@ -48,10 +47,3 @@ def trans(mode = 'normal'):
             transforms.ToTensor()
         ])
         return transform_mask
-    
-    if mode == 'test':
-        transform_test = transforms.Compose([
-            transforms.Resize((imsize,imsize)),
-            transforms.ToTensor()
-        ])
-        return transform_test
