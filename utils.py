@@ -47,3 +47,11 @@ def trans(mode = 'normal'):
             transforms.ToTensor()
         ])
         return transform_mask
+    
+    if mode == 'color_jitter':
+        transform = transforms.Compose([
+            transforms.ColorJitter(brightness=[0.7,1.5]),
+            transforms.Resize((imsize,imsize)),
+            transforms.ToTensor()
+        ])
+        return transform 
