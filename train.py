@@ -19,7 +19,7 @@ random_seed = 777
 
 rand_fix(random_seed)
 
-device = torch.device("cuda:4" if (torch.cuda.is_available()) else "cpu")
+device = torch.device("cuda:3" if (torch.cuda.is_available()) else "cpu")
 
 vgg = VGG19(requires_grad=False).to(device)
 
@@ -31,7 +31,7 @@ Epoch = 19
 bin_model_dir = './binaryzation_checkpoint/checkpoint-{}.pt'.format(Epoch)
 
 num_workers = 0
-batch_size = 2
+batch_size = 4
 num_epochs = 50
 lr_G = 0.001
 lr_D = 0.003
@@ -49,12 +49,20 @@ train_dataloader = DataLoader(train_dataset, batch_size = batch_size,
                              shuffle = True, num_workers = num_workers)
 
 test_dataset = FaceMask(dataset_dir, transform, test = True)
-test_dataloader = DataLoader(test_dataset, batch_size = len(test_dataset),
+test_dataloader = DataLoader(test_dataset, batch_size = int(len(test_dataset) / 4),
                             shuffle = False, num_workers = num_workers)
 
-sample = next(iter(test_dataloader))
-test_img = sample['test_img'].to(device)
-show_img = sample['show_img']
+sample = iter(test_dataloader)
+sample1 = next(sample)
+sample2 = next(sample)
+sample3 = next(sample)
+sample4 = next(sample)
+
+test_img1 = sample1['test_img'].to(device)
+test_img2 = sample2['test_img'].to(device)
+test_img3 = sample3['test_img'].to(device)
+test_img4 = sample4['test_img'].to(device)
+
 '''
 checkpoint = torch.load(model_dir)
 netG_state_dict = checkpoint['netG_state_dict']
@@ -78,14 +86,20 @@ bin_model.apply(weights_init)
 bin_model.load_state_dict(bin_model_state_dict)
 bin_model.eval()
 
-test_bin_img = bin_model(test_img)
-test_img_cat = torch.cat([test_img, test_bin_img], dim = 1).to(device)
+test_bin_img1 = bin_model(test_img1)
+test_img_cat1 = torch.cat([test_img1, test_bin_img1], dim = 1)
+test_bin_img2 = bin_model(test_img2)
+test_img_cat2 = torch.cat([test_img2, test_bin_img2], dim = 1)
+test_bin_img3 = bin_model(test_img3)
+test_img_cat3 = torch.cat([test_img3, test_bin_img3], dim = 1)
+test_bin_img4 = bin_model(test_img4)
+test_img_cat4 = torch.cat([test_img4, test_bin_img4], dim = 1)
 
 optim_G = optim.Adam(netG.parameters(), lr = lr_G, betas = (0.5, 0.999))
-#optim_G.load_state_dict(optG_state_dict)
+optim_G.load_state_dict(optG_state_dict)
 
 optim_D = optim.Adam(netD.parameters(), lr = lr_D, betas = (0.5, 0.999))
-#optim_D.load_state_dict(optD_state_dict)
+optim_D.load_state_dict(optD_state_dict)
 
 dataloader = train_dataloader
 
@@ -103,6 +117,7 @@ Start = time.time()
 print("Starting Training Loop...")
 
 for epoch in range(num_epochs):
+    j = 1
     netG.train()
     netD.train()
     print("Epoch {}/{}".format(epoch + 1, num_epochs))
@@ -160,9 +175,10 @@ for epoch in range(num_epochs):
         optim_G.step()
         
         if (i % 1000 == 0):
-                print("[{:d}/{:d}] D_ganL:{:.4f}     G_ganL:{:.4f}     Shape_L:{:.4f}    Perceptual_L:{:.4f}    SSIM_L:{:.4f}".
-             format(i, len(dataloader), D_Loss.item(), G_Loss.item(), Shape_Loss.item(), perceptual_loss.item(), SSIM_loss.item()))
-    
+                print("[{:d}/{:d}] D_ganL:{:.4f}     G_ganL:{:.4f}     Shape_L:{:.4f}".
+             format(i, len(dataloader), D_Loss.item(), G_Loss.item(), Shape_Loss.item()))
+                
+
     save_checkpoint({
             'epoch' : epoch + 1,
             'netG_state_dict' : netG.state_dict(),
@@ -172,10 +188,12 @@ for epoch in range(num_epochs):
     }, save_dir, epoch + 1)
     
     print("="*100)
-    minutes = (time.time() - start) // 60
-    print('Time taken by epoch: {:.0f}h {:.0f}m {:.0f}s'.format(minutes // 60, minutes, (time.time() - start) % 60))
+    _time = (time.time() - start) // 60
+    hour = _time // 60
+    minutes = hour % 60
+    print('Time taken by epoch: {:.0f}h {:.0f}m {:.0f}s'.format(hour, minutes, (time.time() - start) % 60))
     print()
-    
+
     with torch.no_grad():
         netG.eval()
         result = netG(face_masked_cat).cpu()
@@ -198,7 +216,9 @@ for epoch in range(num_epochs):
                                         normalize = True, nrow = 2)
         utils.save_image(result_img, "./result3/result-{}epoch.png".format(epoch + 1))
         utils.save_image(test_result_img, "./result3/test_result-{}epoch.png".format(epoch + 1))
-        
+
 print("Training is finished")
-minutes = (time.time() - Start) // 60
-print('Time taken by num_epochs: {:.0f}h {:.0f}m {:.0f}s'.format(minutes // 60, minutes, (time.time() - Start) % 60))
+_time = (time.time() - start) // 60
+hour = _time // 60
+minutes = hour % 60
+print('Time taken by num_epochs: {:.0f}h {:.0f}m {:.0f}s'.format(hour, minutes, (time.time() - Start) % 60))
