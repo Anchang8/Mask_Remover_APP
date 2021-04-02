@@ -33,7 +33,8 @@
 
 # Trainset Result
 
-![3-3-7-1_train_result2](https://user-images.githubusercontent.com/61732687/113379761-576c2180-93b5-11eb-8356-72f24153a71c.png)
+![3-3-7-1_train_result2](https://user-images.githubusercontent.com/61732687/113380155-67d0cc00-93b6-11eb-8eaf-83269564875d.png)
+)
 
 # Testset Result
 
