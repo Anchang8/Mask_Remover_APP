@@ -25,6 +25,7 @@
 ![2-1-3-1_Pre-Processing(Kaggle_Dataset_활용)](https://user-images.githubusercontent.com/61732687/113379815-81bddf00-93b5-11eb-8d36-18bbb6dc881a.png)
 
 ![2-1-3-2_Train_Flow(Kaggle_Dataset_활용)](https://user-images.githubusercontent.com/61732687/113379805-78347700-93b5-11eb-8595-2d0a9ca5d5a1.png)
+- Used [Mask Tool](https://github.com/aqeelanwar/MaskTheFace), [CelebA dataset](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html), [Kaggle Dataset](https://www.kaggle.com/prasoonkottarathil/face-mask-lite-dataset)
 - 1.Make the binarization image of Mask Location
 - 2.Concat binarization image with original masked image
 - 3.Remove the mask from face
