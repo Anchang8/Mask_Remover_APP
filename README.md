@@ -13,6 +13,10 @@
 - 2.Mask Remover(with Mask Remover GAN)
 - 3.Merge unmasked faces to original image.
 
+# Dataset
+- We used [Mask Tool](https://github.com/aqeelanwar/MaskTheFace), [CelebA dataset](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html), [Kaggle Dataset](https://www.kaggle.com/prasoonkottarathil/face-mask-lite-dataset)
+- Using Mask Tool Synthesize mask at CelebA dataset.
+
 # Generator
 - ![2-1-3-3_Generator_구조](https://user-images.githubusercontent.com/61732687/113379789-6bb01e80-93b5-11eb-9a46-ec8cffd87e38.png)
 
@@ -25,16 +29,11 @@
 ![2-1-3-1_Pre-Processing(Kaggle_Dataset_활용)](https://user-images.githubusercontent.com/61732687/113379815-81bddf00-93b5-11eb-8d36-18bbb6dc881a.png)
 
 ![2-1-3-2_Train_Flow(Kaggle_Dataset_활용)](https://user-images.githubusercontent.com/61732687/113379805-78347700-93b5-11eb-8595-2d0a9ca5d5a1.png)
-- Used [Mask Tool](https://github.com/aqeelanwar/MaskTheFace), [CelebA dataset](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html), [Kaggle Dataset](https://www.kaggle.com/prasoonkottarathil/face-mask-lite-dataset)
+- Used 
 - 1.Make the binarization image of Mask Location
 - 2.Concat binarization image with original masked image
 - 3.Remove the mask from face
 - 4.Disriminators discriminate Generated Image to Fake and Real Image to Real
-
-# Trainset Result
-
-![3-3-7-1_train_result2](https://user-images.githubusercontent.com/61732687/113380155-67d0cc00-93b6-11eb-8eaf-83269564875d.png)
-)
 
 # Testset Result
 
