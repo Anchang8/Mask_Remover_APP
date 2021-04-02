@@ -29,7 +29,7 @@
 - 1.Make the binarization image of Mask Location
 - 2.Concat binarization image with original masked image
 - 3.Remove the mask from face
-- 4.Disriminator discriminate Generated Image to Fake and Real Image to Real
+- 4.Disriminators discriminate Generated Image to Fake and Real Image to Real
 
 # Trainset Result
 
